@@ -1,0 +1,25 @@
+#!/bin/bash
+
+############################################################
+# This is the updater for opensuse server									 #
+############################################################
+
+home=/home/$USER
+date="`date +%Y%m%d-%H%M`"
+log=/home/$USER/Documents/logs/maintenance.txt
+
+updater() {
+	zypper update -y
+	echo "$date update completed" >> $log
+	init 6
+}
+
+if [ `date +d` -lt 8 ]; then
+	rm -rf $log
+	touch $log
+	echo`date +%Y%m%d` "logfile cleanup completed" >> $log
+	updater
+else
+	echo "$date nothing to remove" >> $log
+	updater
+fi
