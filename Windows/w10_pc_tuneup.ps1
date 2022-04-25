@@ -1,6 +1,6 @@
-﻿#version 2022.4.0.0.1
+﻿#version 2022.4.0.0.2
 $u=$env:UserName
-#$c=$env:COMPUTERNAME
+$c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
 #$b="C:\Program Files\zAdmin"
 $mo=Get-Date -UFormat %b
@@ -26,8 +26,10 @@ function cleanup {
     Set-Location $HOME
     Clear-RecycleBin -Force
     Write-Host "Recycle Bin cleaned - Ignore the error. It works."
-    Set-Location $HOME\Downloads
-    Remove-Item -Recurse *
+    if( $c -ne "MightyMouse"){
+        Set-Location $HOME\Downloads
+        Remove-Item -Recurse *
+    } else { Write-Output "Not deleting downloads folder" }
     Remove-Item c:\Windows\Temp\* -Recurse -Force -ErrorAction SilentlyContinue
     $PSScriptRoot
     Start-Process -FilePath "C:\WINDOWS\system32\cleanmgr.exe" /sagerun:1 | Out-Null
