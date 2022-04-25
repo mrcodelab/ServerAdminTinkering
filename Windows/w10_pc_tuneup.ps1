@@ -1,10 +1,15 @@
-﻿#version 2022.4.0.0.2
+﻿#version 2022.4.0.0.3
 $u=$env:UserName
 $c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
 #$b="C:\Program Files\zAdmin"
 $mo=Get-Date -UFormat %b
 $sched = "Jan", "Mar", "May", "Jul", "Sep", "Nov"
+Write-Host "Updating the maintenance and security files"
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile 'C:\Program Files\zAdmin\tuneup.ps1'
+Write-Host "tuneup script is up to date"
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/pihole-g/main/hosts -OutFile 'C:\Windows\System32\drivers\etc\hosts'
+Write-Host "host file has been updated."
 $task = Read-Host "Do you need a reboot (r) || shutdown(s) || keep awake(k)"
 
 function stateTogg {    
@@ -39,11 +44,6 @@ function cleanup {
 
 
 function common {
-    Write-Host "Updating the maintenance and security files"
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile 'C:\Program Files\zAdmin\tuneup.ps1'
-    Write-Host "tuneup script is up to date"
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/pihole-g/main/hosts -OutFile 'C:\Windows\System32\drivers\etc\hosts'
-    Write-Host "host file has been updated."
     Write-Host "Updating Windows"
     updater
     Write-Host "Cleaning up the system bloat"
