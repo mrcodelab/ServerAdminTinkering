@@ -41,7 +41,9 @@ function cleanup {
 function common {
     Write-Host "Updating the maintenance and security files"
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile 'C:\Program Files\zAdmin\tuneup.ps1'
+    Write-Host "tuneup script is up to date"
     Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/pihole-g/main/hosts -OutFile 'C:\Windows\System32\drivers\etc\hosts'
+    Write-Host "host file has been updated."
     Write-Host "Updating Windows"
     updater
     Write-Host "Cleaning up the system bloat"
