@@ -1,4 +1,4 @@
-﻿#version 1.0
+﻿#version 2022.4.0.0.1
 $u=$env:UserName
 #$c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
@@ -38,7 +38,7 @@ function cleanup {
 
 function common {
     Write-Host "Updating the maintenance and security files"
-    Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/tuneup.ps1 -OutFile 'C:\Program Files\zAdmin\tuneup.ps1'
+    Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile 'C:\Program Files\zAdmin\tuneup.ps1'
     #Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/pihole-g/main/hosts -OutFile 'C:\Windows\System32\drivers\etc\hosts'
     Write-Host "Updating Windows"
     updater
