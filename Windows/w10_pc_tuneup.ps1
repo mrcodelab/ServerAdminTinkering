@@ -1,4 +1,5 @@
-﻿$u=$env:UserName
+﻿#version 1.0
+$u=$env:UserName
 #$c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
 #$b="C:\Program Files\zAdmin"
