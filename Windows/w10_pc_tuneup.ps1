@@ -1,4 +1,4 @@
-﻿#version 2022.4.0.0.3
+﻿#version 2022.4.0.0.4
 $u=$env:UserName
 $c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
@@ -34,6 +34,7 @@ function cleanup {
     if( $c -ne "MightyMouse"){
         Set-Location $HOME\Downloads
         Remove-Item -Recurse *
+        Write-Host "Done cleaning downloads"
     } else { Write-Output "Not deleting downloads folder" }
     Remove-Item c:\Windows\Temp\* -Recurse -Force -ErrorAction SilentlyContinue
     $PSScriptRoot
