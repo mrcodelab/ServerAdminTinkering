@@ -13,7 +13,7 @@ Write-Host "host file has been updated."
 $task = Read-Host "Do you need a reboot (r) || shutdown(s) || keep awake(k)"
 
 function stateTogg {    
-    if ( $task -eq "s" ) {
+    if ( $task -eq 's' ) {
         Stop-Computer
         } 
     elseif ($task -eq 'r') {
