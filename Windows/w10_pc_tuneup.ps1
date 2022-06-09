@@ -1,5 +1,5 @@
 ﻿#version yyyy.mm.MAJ.MIN.r
-#version 2022.05.0.0.1
+#version 2022.06.0.0.1
 $u=$env:UserName
 $c=$env:COMPUTERNAME
 Write-Output "Hi $u. "
@@ -13,10 +13,10 @@ Write-Host "tuneup script is up to date"
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/pihole-g/main/hosts -OutFile 'C:\Windows\System32\drivers\etc\hosts'
 Write-Host "host file has been updated."
 
-function stateTogg {    
+function stateTogg {
     if ( $task -eq 's' ) {
         Stop-Computer
-        } 
+        }
     elseif ($task -eq 'r') {
         Restart-Computer
         }
@@ -28,16 +28,23 @@ function updater {
     Get-WUInstall -MicrosoftUpdate -Install -AcceptAll -AutoReboot
     }
 
-function cleanup {
-    Set-Location $HOME
-    Clear-RecycleBin -Force
-    Write-Host "Recycle Bin cleaned - Ignore the error. It works."
+function dldclnr {
     if( $c -ne "MightyMouse"){
         Set-Location $HOME\Downloads
         Remove-Item -Recurse *
         Write-Host "Done cleaning downloads"
-    } else { Write-Output "Not deleting downloads folder" }
+    }
+    else { Write-Output "Not deleting downloads folder" }
+}
+
+function cleanup {
+    Set-Location $HOME
+    Clear-RecycleBin -Force
+    Write-Host "Recycle Bin cleaned - Ignore the error. It works."
+    dldclnr
+    Write-Host "Cleaning the temp folder."
     Remove-Item c:\Windows\Temp\* -Recurse -Force -ErrorAction SilentlyContinue
+    Write-Host "Temp folder cleaned."
     $PSScriptRoot
     Start-Process -FilePath "C:\WINDOWS\system32\cleanmgr.exe" /sagerun:1 | Out-Null
     Wait-Process -Name cleanmgr
