@@ -1,6 +1,10 @@
 """
-This script clears the approximately 13 cache directories for MS Teams
 version 2022.06.21.1.0.0
+This script clears the approximately 13 cache directories for MS Teams
+This script is sourced from:
+https://blog.valeconsulting.co.uk/2018/09/28/clear-the-microsoft-teams-client-cache/
+This script addresses this issue:
+https://techcommunity.microsoft.com/t5/microsoft-teams/teams-chat-messages-not-showing-up/m-p/1442366
 """
 
 $challenge = Read-Host "Are you sure you want to delete Teams Cache (Y/N)?"
