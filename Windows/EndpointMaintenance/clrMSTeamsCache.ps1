@@ -1,5 +1,5 @@
 """
-version 2022.06.21.1.0.0
+version 2022.06.1.0.2
 This script clears the approximately 13 cache directories for MS Teams
 This script is sourced from:
 https://blog.valeconsulting.co.uk/2018/09/28/clear-the-microsoft-teams-client-cache/
@@ -20,7 +20,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "Teams Process Sucessfully Stopped" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Clearing Teams Disk Cache" -ForegroundColor Yellow
     try {
@@ -35,7 +35,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "Teams Disk Cache Cleaned" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Stopping Chrome Process" -ForegroundColor Yellow
     try {
@@ -44,7 +44,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "Chrome Process Sucessfully Stopped" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Clearing Chrome Cache" -ForegroundColor Yellow
     try {
@@ -54,7 +54,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "Chrome Cleaned" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Stopping IE Process" -ForegroundColor Yellow
     try {
@@ -63,7 +63,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "Internet Explorer and Edge Processes Sucessfully Stopped" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Clearing IE Cache" -ForegroundColor Yellow
     try {
@@ -72,7 +72,7 @@ elseif ($challenge -eq "Y") {
         Write-Host "IE and Edge Cleaned" -ForegroundColor Green
     }
     catch {
-        echo $_
+        Write-Host $_
     }
     Write-Host "Cleanup Complete... Launching Teams" -ForegroundColor Green
     Start-Process -FilePath $env:LOCALAPPDATA\Microsoft\Teams\current\Teams.exe
