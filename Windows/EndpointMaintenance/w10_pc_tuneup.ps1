@@ -1,13 +1,13 @@
 ﻿#version yyyy.mm.MAJ.MIN.r
-#version 2022.06.2.1.1
-$u=$env:UserName
-$c=$env:COMPUTERNAME
+#version 2022.06.2.2.1
+$version = "202206.2.2.1"
+$u = $env:UserName
+$c = $env:COMPUTERNAME
 Write-Output "Hi $u. "
-$b="C:\Program Files\zAdmin"
+$b = "C:\Program Files\zAdmin"
 $h = "C:\Windows\System32\drivers\etc\hosts"
-$mo=Get-Date -UFormat %b
-$sched = "Jan", "Mar", "May", "Jul", "Sep", "Nov"
-$task = Read-Host "Do you need a reboot (r) || shutdown(s) || keep awake(k)"
+Write-Host "You are running version $version of Spam Defender."
+$task = Read-Host "Do you need a reboot (r) OR shutdown(s) OR keep awake(k)"
 $task = $task.ToUpper()
 
 function msdtTest {
@@ -45,7 +45,7 @@ function gitUpdater{
         Write-Host "Updating the maintenance and security files" -ForegroundColor Yellow
         Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile '$HOME\Downloads'
         $zip1 = Get-FileHash -Algorithm SHA256 $HOME\Downloads\w10_pc_tuneup.ps1 | Select-Object -ExpandProperty Hash
-        Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_hash.txt -OutFile '$HOME\Downloads'
+        Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Hashes/w10_pc_hash.txt -OutFile '$HOME\Downloads'
         $hash1 = Get-Content $HOME\Downloads\w10_pc_hash.txt
         if ( $zip1 -eq $hash1 ) {
             Move-Item w10_pc_tuneup.ps1 $b
@@ -54,7 +54,7 @@ function gitUpdater{
         else { Write-Host "The tuneup hash did not match!" -ForegroundColor Red }
     }
     catch {
-        -ErrorAction SilentlyContinue
+        Write-Host "" -ErrorAction SilentlyContinue
     }
 
     try {
@@ -69,7 +69,7 @@ function gitUpdater{
         else { Write-Host "The host hash did not match!" -ForegroundColor Red }
     }
     catch {
-        -ErrorAction SilentlyContinue
+        Write-Host "" -ErrorAction SilentlyContinue
     }
     Write-Host "Security file update blocked by antivirus. No biggie." -ForegroundColor White
 
@@ -81,13 +81,15 @@ function updater {
 }
 
 function dldclnr {
-    if( $c -ne "MightyMouse"){
+    $dldclnr = Read-Host "Do you want to erase everything in the downloads folder? (Yes/No)"
+    $dldclnr = $dldclnr.ToUpper()
+    if ( $dldclnr -eq "YES" ) {
         Remove-Item -Path $Home\Downloads\* -Recurse -Force
         Write-Host "Done cleaning downloads" -ForegroundColor Green
     }
-    else { 
+    else {
+        Write-Host "No problem, skipping this step."
         Remove-Item $HOME\Downloads\*.gz -Recurse
-        Write-Host "Not deleting downloads folder" 
     }
 }
 
@@ -124,13 +126,5 @@ function common {
 Write-Host "Running common workload" -ForegroundColor Yellow
 
 common
-
-$PSScriptRoot
-
-if (( $u -eq "mateusz" ) -and ( $mo -in $sched )) {
-    Write-Host "running admin special" -ForegroundColor Yellow
-    & "$PSScriptRoot\pwmaintenance.ps1"
-    } else { Write-Host "Not now Madeline" -ForegroundColor Blue}
-
 
 Stop-Process -Name powershell
