@@ -45,7 +45,7 @@ function gitUpdater{
         Write-Host "Updating the maintenance and security files" -ForegroundColor Yellow
         Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Windows/w10_pc_tuneup.ps1 -OutFile '$HOME\Downloads'
         $zip1 = Get-FileHash -Algorithm SHA256 $HOME\Downloads\w10_pc_tuneup.ps1 | Select-Object -ExpandProperty Hash
-        Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/main/Hashes/w10_pc_hash.txt -OutFile '$HOME\Downloads'
+        Invoke-WebRequest -Uri https://raw.githubusercontent.com/mrcodelab/hashes/main/w10_pc_hash.txt -OutFile '$HOME\Downloads'
         $hash1 = Get-Content $HOME\Downloads\w10_pc_hash.txt
         if ( $zip1 -eq $hash1 ) {
             Move-Item w10_pc_tuneup.ps1 $b
