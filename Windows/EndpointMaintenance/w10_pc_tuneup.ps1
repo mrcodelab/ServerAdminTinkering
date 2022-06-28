@@ -1,12 +1,12 @@
-﻿#version yyyy.mm.MAJ.MIN.r
-#version 2022.06.2.2.1
-$version = "202206.2.2.1"
+﻿#version MAJ.MIN.r.yyyymo
+#version 2.2.2.202206
+$version = "2.2.2.202206"
 $u = $env:UserName
 $c = $env:COMPUTERNAME
 Write-Output "Hi $u. "
 $b = "C:\Program Files\zAdmin"
 $h = "C:\Windows\System32\drivers\etc\hosts"
-Write-Host "You are running version $version of Spam Defender."
+Write-Host "You are running version $version of Windows PC Tuneup."
 $task = Read-Host "Do you need a reboot (r) OR shutdown(s) OR keep awake(k)"
 $task = $task.ToUpper()
 
@@ -103,8 +103,7 @@ function cleanup {
     Write-Host "Temp folder cleaned." -ForegroundColor Green
     Set-Location $PSScriptRoot
     Start-Process -FilePath "C:\WINDOWS\system32\cleanmgr.exe" /sagerun:1 | Out-Null
-    Wait-Process -Name cleanmgr
-    Start-Process -FilePath "C:\Program Files (x86)\Wise\Wise Registry Cleaner\WiseRegCleaner.exe"
+    Wait-Process -Name 
 }
 
 

@@ -1,5 +1,5 @@
 """
-version 2022.06.1.0.2
+version 1.0.2.202206
 This script clears the approximately 13 cache directories for MS Teams
 This script is sourced from:
 https://blog.valeconsulting.co.uk/2018/09/28/clear-the-microsoft-teams-client-cache/

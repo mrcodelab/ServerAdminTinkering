@@ -1,4 +1,4 @@
-# This is the controller for all linux systems to choose the update type
+# This update script will choose the OS type and execute
 import subprocess as sproc
 import os
 import datetime
@@ -24,10 +24,10 @@ def osName():
 
 
 def dUpt():
-    sproc.call(["sudo", "apt", "autoclean"])
-    sproc.call(["sudo", "apt", "autoremove", "--yes"])
     sproc.call(["sudo", "apt-get", "update"])
     sproc.call(["sudo", "apt-get" "upgrade", "--yes"])
+    sproc.call(["sudo", "apt", "autoclean"])
+    sproc.call(["sudo", "apt", "autoremove", "--yes"])
 
 
 def pUpt():

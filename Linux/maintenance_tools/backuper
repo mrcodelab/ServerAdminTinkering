@@ -1,5 +1,5 @@
 #!/bin/bash
-logfile="/home/$USER/Downloads/bkup.txt"
+logfile="/home/$USER/Documents/bkup.txt"
 
 if [ ! -f $logfile ]; then
 	touch $logfile
