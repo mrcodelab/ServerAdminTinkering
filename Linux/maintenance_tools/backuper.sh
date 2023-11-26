@@ -18,7 +18,7 @@ bkup(){
 	ls ~/Downloads/*.gz
 	echo "backup completed" >> $logfile
 
-#	scp ~/Downloads/$fname.tar.gz root@[2001:19f0:5:2548:5400:03ff:fedd:5a98]:/home/DropBox/
+#	scp ~/Downloads/$fname.tar.gz <path_to_cloud>:/home/DropBox/
 #	echo "copy to offsite complete" >> $logfile
 }
 bkup
