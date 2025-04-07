@@ -12,7 +12,7 @@ adtlpkg=("nano" "aide" "fapolicyd" "openscap" "scap-workbench" "keepassxc" "fail
 
 # Write updater.sh for rpm to string variable
 rpm_update=$(cat << 'EOF'
-#!/bin/bash'
+#!/bin/bash
 
 exec_dt=$(date +"%Y%m%d")
 logfile='/var/log/updater.log'
@@ -31,7 +31,7 @@ EOF
 
 # Write udpater.sh for deb to string variable
 deb_update=$(cat << 'EOF'
-#!/bin/bash'
+#!/bin/bash
 
 exec_dt=$(date +"%Y%m%d")
 logfile='/var/log/updater.log'
@@ -108,42 +108,40 @@ sudo systemctl enable repopull.timer
 sudo systemctl start repopull.timer
 EOF
 
-cat << EOF > "$custpth/file_verifier.sh"
-#!/bin/bash
+{
+    echo '#!/bin/bash'
+    echo ''
+    echo 'read -p "Enter the path to file 1: " file1'
+    echo 'read -p "Enter the path to file 2: " file2'
+    echo ''
+    echo 'hash1=$(md5sum "$file1" | awk '{print $1}')'
+    echo 'hash2=$(md5sum "$file2" | awk '{print $1}')'
+    echo ''
+    echo 'if [ "$hash1" = "$hash2" ]; then'
+    echo -e	'\t echo "Files are the same"'
+    echo 'else'
+    echo -e	'\t echo "Files are not the same"'
+    echo 'fi'
+} > "$custpth/file_verifier.sh"
 
-read -p "Enter the path to file 1: " file1
-read -p "Enter the path to file 2: " file2
-
-hash1=$(md5sum "$file1" | awk '{print $1}')
-hash2=$(md5sum "$file2" | awk '{print $1}')
-
-if [ "$hash1" = "$hash2" ]; then
-	echo "Files are the same"
-else
-	echo "Files are not the same"
-fi
-EOF
-
-cat << EOF > "$custpth/sha256_verifier.sh"
-#!/bin/bash
-
-read -p "Enter path to file 1: " file1
-read -p "Enter source hash in SHA256 for the downloaded file: \n" hash2
-
-
-# Calculate the SHA256 hash for both files
-hash1=$(sha256sum "$file1" | cut -d' ' -f1)
-#hash2=$(sha256sum "$1" | cut -d' ' -f1)
-
-echo "$hash1"
-
-# Compare the hashes
-if [ "$hash1" == "$hash2" ]; then
-    echo "The files are identical."
-else
-    echo "The files are different."
-fi
-EOF
+{
+    echo '#!/bin/bash'
+    echo 'read -p "Enter path to file 1: " file1'
+    echo 'read -p "Enter source hash in SHA256 for the downloaded file: \n" hash2'
+    echo ''
+    echo '# Calculate the SHA256 hash for both files'
+    echo 'hash1=$(sha256sum "$file1" | cut -d' ' -f1)'
+    echo '#hash2=$(sha256sum "$1" | cut -d' ' -f1)'
+    echo ''
+    echo 'echo "$hash1"'
+    echo ''
+    echo '# Compare the hashes'
+    echo 'if [ "$hash1" == "$hash2" ]; then'
+        echo -e '\t echo "The files are identical."'
+    echo 'else'
+        echo -e '\t echo "The files are different."'
+    echo 'fi'
+} > "$custpth/sha256_verifier.sh"
 
 curl -fsS https://dl.brave.com/install.sh | sh
 echo "${adtlpkg[@]}"
