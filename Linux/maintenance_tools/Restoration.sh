@@ -38,7 +38,7 @@ adtlpkg=("nano" "aide" "fapolicyd" "openscap" "scap-workbench" "keepassxc" "fail
 		"samba-winbind-krb5-locator" "oddjob" "oddjob-mkhomedir" "krb5-workstation")
 
 # Write updater.sh for rpm to string variable
-read -r -d '' rpm_update << EOM
+rpm_update=$(cat << 'EOF'
 #!/bin/bash'
 
 exec_dt=$(date +"%Y%m%d")
@@ -53,10 +53,11 @@ pwck 2>&1 >> $logfile
 echo "$exec_dt - system update and pwck completed." >> $logfile
 spacer
 exit
-EOM
+EOF
+)
 
 # Write udpater.sh for deb to string variable
-read -r -d '' deb_update << EOM
+deb_update=$(cat << 'EOF'
 #!/bin/bash'
 
 exec_dt=$(date +"%Y%m%d")
@@ -81,7 +82,8 @@ pwck 2>&1 >> $logfile
 echo "$exec_dt - system update and pwck completed." >> $logfile
 spacer
 exit
-EOM
+EOF
+)
 
 # Function to install EPEL
 install_epel() {
@@ -92,12 +94,10 @@ install_epel() {
             sudo dnf install -y epel-release
             sudo dnf install -y @virtualization
             sudo dnf remove -y firefox*
-			sudo printf "$rpm_update" | tee -a $custpth/updater.sh
             ;;
         "red hat enterprise linux"|"rhel")
             if [[ "$VERSION" =~ ^9 ]]; then
                 echo "Detected RHEL 9.x"
-				sudo printf "$rpm_update" | tee -a $custpth/updater.sh
                 echo "Installing EPEL for RHEL 9..."
                 sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
             else
@@ -106,7 +106,6 @@ install_epel() {
             ;;
         "fedora linux")
             echo "Detected Fedora Linux $VERSION"
-			sudo printf "$rpm_update" | tee -a $custpth/updater.sh
             echo "Fedora already includes many EPEL packages in its default repos"
             # Since Fedora includes most everything you'd need from EPEL, this is more of an emulated try block
             echo "Installing EPEL for Fedora..."
@@ -117,7 +116,6 @@ install_epel() {
         "debian gnu/linux")
             if [ "$VERSION" = "12" ]; then
                 echo "Detected Debian 12"
-				sudo printf "$deb_update" | tee -a $custpth/updater.sh
                 echo "EPEL is for RPM-based systems; Debian uses APT"
                 echo "No EPEL equivalent needed - Debian 12 has extensive default repos"
             else
@@ -228,10 +226,12 @@ curl -fsS https://dl.brave.com/install.sh | sh
 echo "${adtlpkg[@]}"
 case "$OS_TYPE_LOWER" in
         "debian gnu/linux")
+            sudo printf "$deb_update" | tee -a $custpth/updater.sh
 			sudo apt install -y ${adtlpkg[@]}
 			sudo bash /opt/custom_scripts/updater.sh
 		;;
         *)
+			sudo printf "$rpm_update" | tee -a $custpth/updater.sh
             dnf install -y ${adtlpkg[@]}
 			dnf up -y            
             ;;
