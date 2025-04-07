@@ -205,11 +205,6 @@ get_os_info() {
 }
 
 get_os_info
-# # Get OS info
-# IFS='|' read -r OS_TYPE VERSION <<< "$(get_os_info)"
-
-# # Convert OS_TYPE to lowercase for case matching
-# OS_TYPE_LOWER=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
 
 sudo chmod -R 755 $custpth/*
 sudo chmod -R 755 $sysdpth/updater.*
