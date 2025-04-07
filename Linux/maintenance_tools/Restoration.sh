@@ -226,12 +226,12 @@ curl -fsS https://dl.brave.com/install.sh | sh
 echo "${adtlpkg[@]}"
 case "$OS_TYPE_LOWER" in
         "debian gnu/linux")
-            sudo printf "$deb_update" | tee -a $custpth/updater.sh
+            echo "$deb_update" | tee $custpth/updater.sh > /dev/null
 			sudo apt install -y ${adtlpkg[@]}
 			sudo bash /opt/custom_scripts/updater.sh
 		;;
         *)
-			sudo printf "$rpm_update" | tee -a $custpth/updater.sh
+			echo "$rpm_update" | tee $custpth/updater.sh > /dev/null
             dnf install -y ${adtlpkg[@]}
 			dnf up -y            
             ;;
