@@ -5,33 +5,6 @@ touch /var/log/updater.log
 custpth='/opt/custom_scripts'
 sysdpth='/etc/systemd/system'
 
-# Function to get OS info
-get_os_info() {
-    local os_type="Unknown"
-    local version="Unknown"
-
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        os_type=$NAME
-        version=$VERSION_ID
-    elif [ -f /etc/lsb-release ]; then
-        . /etc/lsb-release
-        os_type=$DISTRIB_ID
-        version=$DISTRIB_RELEASE
-    elif [ -f /etc/redhat-release ]; then
-        os_type=$(cat /etc/redhat-release | awk '{print $1}')
-        version=$(cat /etc/redhat-release | awk '{print $3}')
-    fi
-
-    echo "$os_type|$version"
-}
-
-# Get OS info
-IFS='|' read -r OS_TYPE VERSION <<< "$(get_os_info)"
-
-# Convert OS_TYPE to lowercase for case matching
-OS_TYPE_LOWER=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
-
 adtlpkg=("nano" "aide" "fapolicyd" "openscap" "scap-workbench" "keepassxc" "fail2ban" "p7zip"\
         "policycoreutils-gui" "setools-gui" "setools" "setools-console" "selinux-policy" "createrepo" "genisoimage"\
 		"realmd" "samba" "samba-winbind" "samba-winbind-clients" "samba-common" "samba-common-tools"\
@@ -131,6 +104,7 @@ install_epel() {
 # Execute the installation function
 install_epel "$OS_TYPE_LOWER"
 
+# Deploy files for all Linux systems
 cat <<EOF > $sysdpth/updater.service
 [Unit]
 Description=Runs the updater tool.
@@ -160,7 +134,7 @@ WantedBy=timers.target
 EOF
 echo "updater.timer created"
 
-cat <<EOF > /etc/logrotate.d/updaterprovide an example of a bash variable that is a multi-lineprov string
+cat <<EOF > /etc/logrotate.d/updater
 /var/log/updater.log {
 	missingok
 	create 0644 root root
@@ -224,17 +198,70 @@ EOF
 
 curl -fsS https://dl.brave.com/install.sh | sh
 echo "${adtlpkg[@]}"
-case "$OS_TYPE_LOWER" in
-        "debian gnu/linux")
-            echo "$deb_update" | tee $custpth/updater.sh > /dev/null
-			sudo apt install -y ${adtlpkg[@]}
-			sudo bash /opt/custom_scripts/updater.sh
-		;;
-        *)
-			echo "$rpm_update" | tee $custpth/updater.sh > /dev/null
-            dnf install -y ${adtlpkg[@]}
-			dnf up -y            
-            ;;
-esac
+
+# Distro specific tasks
+get_os_info() {
+    local os_type="Unknown"
+    local version="Unknown"
+    local is_debian_based="false"
+    local is_rpm_based="false"
+
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        os_type=$NAME
+        version=$VERSION_ID
+        
+        # Check if it's Debian-based
+        if [ "${ID}" = "debian" ] || [[ "${ID_LIKE}" =~ "debian" ]]; then
+            is_debian_based="true"
+        fi
+        
+        # Check if it's RPM-based
+        if [ "${ID}" = "fedora" ] || [ "${ID}" = "almalinux" ] || [ "${ID}" = "rhel" ] || [[ "${ID_LIKE}" =~ "rhel" ]] || [[ "${ID_LIKE}" =~ "fedora" ]]; then
+            is_rpm_based="true"
+        fi
+    elif [ -f /etc/lsb-release ]; then
+        . /etc/lsb-release
+        os_type=$DISTRIB_ID
+        version=$DISTRIB_RELEASE
+        
+        # Check if it's Debian-based
+        if [ "${DISTRIB_ID}" = "Debian" ] || [ "${DISTRIB_ID}" = "Ubuntu" ] || [[ "${DISTRIB_ID}" == *"linuxmint"* ]]; then
+            is_debian_based="true"
+        fi
+    elif [ -f /etc/redhat-release ]; then
+        os_type=$(cat /etc/redhat-release | awk '{print $1}')
+        version=$(cat /etc/redhat-release | awk '{print $3}')
+        is_rpm_based="true"
+    fi
+
+    if [ "$is_debian_based" = "true" ]; then
+        echo "Debian-based|$version"
+        echo "$deb_update" | tee $custpth/updater.sh > /dev/null
+        sudo apt install -y ${adtlpkg[@]}
+        sudo bash /opt/custom_scripts/updater.sh
+    elif [ "$is_rpm_based" = "true" ]; then
+        echo "RPM-based|$version"
+        if [[ "${ID_LIKE}" =~ "rhel" ]]; then
+            echo "Installing EPEL for RHEL 9..."
+            sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+        fi
+        sudo dnf install -y epel-release
+        sudo dnf install -y @virtualization
+        sudo dnf remove -y pidgin hexchat firefox*
+        echo "$rpm_update" | tee $custpth/updater.sh > /dev/null
+        dnf install -y ${adtlpkg[@]}
+        dnf up -y
+    else
+        echo "$os_type|$version"
+    fi
+}
+
+# Get OS info
+IFS='|' read -r OS_TYPE VERSION <<< "$(get_os_info)"
+
+# Convert OS_TYPE to lowercase for case matching
+OS_TYPE_LOWER=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
+
 reboot
 #exit
