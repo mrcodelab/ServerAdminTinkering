@@ -58,9 +58,6 @@ exit
 EOF
 )
 
-# Execute the installation function
-install_epel "$OS_TYPE_LOWER"
-
 # Deploy files for all Linux systems
 cat <<EOF > $sysdpth/updater.service
 [Unit]
@@ -101,11 +98,6 @@ cat <<EOF > /etc/logrotate.d/updater
 }
 EOF
 echo "logrotate is setup"
-
-sudo chmod 755 $custpth/*
-sudo chmod 755 $sysdpth/updater.*
-sudo chmod 644 /var/log/updater.log
-systemctl enable updater.service
 
 cat <<EOF > $custpth/pre-repo-pull.txt
 #!/bin/bash
@@ -214,11 +206,17 @@ get_os_info() {
     fi
 }
 
-# Get OS info
-IFS='|' read -r OS_TYPE VERSION <<< "$(get_os_info)"
+get_os_info
+# # Get OS info
+# IFS='|' read -r OS_TYPE VERSION <<< "$(get_os_info)"
 
-# Convert OS_TYPE to lowercase for case matching
-OS_TYPE_LOWER=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
+# # Convert OS_TYPE to lowercase for case matching
+# OS_TYPE_LOWER=$(echo "$OS_TYPE" | tr '[:upper:]' '[:lower:]')
+
+sudo chmod -R 755 $custpth/*
+sudo chmod -R 755 $sysdpth/updater.*
+sudo chmod 644 /var/log/updater.log
+systemctl enable updater.service
 
 reboot
 #exit
