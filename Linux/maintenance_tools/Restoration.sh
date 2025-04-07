@@ -58,49 +58,6 @@ exit
 EOF
 )
 
-# Function to install EPEL
-install_epel() {
-    case "$OS_TYPE_LOWER" in
-        "almalinux")
-            echo "Detected AlmaLinux $VERSION"
-            echo "Installing EPEL for AlmaLinux..."
-            sudo dnf install -y epel-release
-            sudo dnf install -y @virtualization
-            sudo dnf remove -y firefox*
-            ;;
-        "red hat enterprise linux"|"rhel")
-            if [[ "$VERSION" =~ ^9 ]]; then
-                echo "Detected RHEL 9.x"
-                echo "Installing EPEL for RHEL 9..."
-                sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-            else
-                echo "RHEL version $VERSION not supported for EPEL in this script"
-            fi
-            ;;
-        "fedora linux")
-            echo "Detected Fedora Linux $VERSION"
-            echo "Fedora already includes many EPEL packages in its default repos"
-            # Since Fedora includes most everything you'd need from EPEL, this is more of an emulated try block
-            echo "Installing EPEL for Fedora..."
-            sudo dnf install -y epel-release
-            sudo dnf install -y @virtualization
-            sudo dnf remove -y pidgin hexchat firefox*
-            ;;
-        "debian gnu/linux")
-            if [ "$VERSION" = "12" ]; then
-                echo "Detected Debian 12"
-                echo "EPEL is for RPM-based systems; Debian uses APT"
-                echo "No EPEL equivalent needed - Debian 12 has extensive default repos"
-            else
-                echo "Debian version $VERSION not matched to 12"
-            fi
-            ;;
-        *)
-            echo "OS $OS_TYPE version $VERSION not matched for EPEL installation"
-            ;;
-    esac
-}
-
 # Execute the installation function
 install_epel "$OS_TYPE_LOWER"
 
@@ -226,7 +183,7 @@ get_os_info() {
         version=$DISTRIB_RELEASE
         
         # Check if it's Debian-based
-        if [ "${DISTRIB_ID}" = "Debian" ] || [ "${DISTRIB_ID}" = "Ubuntu" ] || [[ "${DISTRIB_ID}" == *"linuxmint"* ]]; then
+        if [ "${DISTRIB_ID}" = "Debian" ] || [ "${DISTRIB_ID}" = "Ubuntu" ] || [[ "${DISTRIB_ID}" == *"mint"* ]]; then
             is_debian_based="true"
         fi
     elif [ -f /etc/redhat-release ]; then
