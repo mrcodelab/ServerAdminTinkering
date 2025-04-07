@@ -26,6 +26,8 @@ def osName():
 def dUpt():
     sproc.call(["sudo", "apt-get", "update"])
     sproc.call(["sudo", "apt-get" "upgrade", "--yes"])
+    sproc.call(["sudo", "apt", "udpate"])
+    sproc.call(["sudo", "apt", "full-upgrade", "--yes"])
     sproc.call(["sudo", "apt", "autoclean"])
     sproc.call(["sudo", "apt", "autoremove", "--yes"])
 
