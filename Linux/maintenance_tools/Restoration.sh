@@ -1,5 +1,8 @@
 #!/bin/bash
-
+###################################################################################################
+# To one-line deploy, paste this command into terminal:
+# curl -fsS https://raw.githubusercontent.com/mrcodelab/ServerAdminTinkering/refs/heads/main/Linux/maintenance_tools/Restoration.sh | sudo sh
+###################################################################################################
 mkdir -p /opt/custom_scripts
 touch /var/log/updater.log
 custpth='/opt/custom_scripts'
